@@ -22,3 +22,16 @@ export const auth = async (req: AuthRequest, res: Response, next: NextFunction) 
     }
   };
   
+
+  export const adminAuth = async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      await auth(req, res, () => {
+        if (req.user?.role !== 'admin') {
+          return res.status(403).json({ error: 'Admin access required' });
+        }
+        next();
+      });
+    } catch (error) {
+      res.status(401).json({ error: 'Please authenticate as admin' });
+    }
+  };
